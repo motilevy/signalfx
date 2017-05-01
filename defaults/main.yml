@@ -3,7 +3,7 @@
 unique_id: "{{ ansible_ec2_mac | password_hash('md5') | md5 }}"
 collectd_interval: 10
 signalfx_api_key: "xxx"
-signalfx_download_url: "https://dl.signalfx.com/rpms/SignalFx-rpms/"S
+signalfx_download_url: "https://dl.signalfx.com/rpms/SignalFx-rpms"
 signalfx_rpms_version: "release"
 
 signalfx_aws_rpms:

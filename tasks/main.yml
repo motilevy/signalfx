@@ -13,10 +13,10 @@
 
 - name: Install rpms from signalFX
   yum:
-    name:  {{ signalfx_download_url }}/{{ signalfx_rpms_version }}/{{ item }}
+    name:  "{{ signalfx_download_url }}/{{ signalfx_rpms_version }}/{{ item }}"
     state: present
   with_items:
-    - signalfx_aws_rpms
+    "{{ signalfx_aws_rpms }}"
   when: ansible_distribution == "Amazon"
 
 - name: Install collectd and base plugins
