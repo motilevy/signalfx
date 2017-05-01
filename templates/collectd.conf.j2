@@ -1,0 +1,69 @@
+# ansible managed
+
+TypesDB "/usr/share/collectd/types.db"
+Hostname "{{ ansible_ec2_instance_id }}"
+Interval "{{ collectd_interval }}"
+Timeout 2
+ReadThreads 5
+WriteQueueLimitHigh 500000
+WriteQueueLimitLow  400000
+CollectInternalStats true
+
+LoadPlugin logfile
+
+<Plugin logfile>
+  LogLevel "info"
+  File "/var/log/signalfx-collectd.log"
+  Timestamp true
+  PrintSeverity false
+</Plugin>
+
+LoadPlugin cpu
+LoadPlugin cpufreq
+LoadPlugin df
+
+LoadPlugin disk
+<Plugin "disk">
+  Disk "/^loop\d+$/"
+  Disk "/^dm-\d+$/"
+  IgnoreSelected "true"
+</Plugin>
+
+LoadPlugin interface
+<Plugin "interface">
+  Interface "/^lo\d*$/"
+  Interface "/^docker.*/"
+  Interface "/^t(un|ap)\d*$/"
+  Interface "/^veth.*$/"
+  IgnoreSelected "true"
+</Plugin>
+
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin protocols
+<Plugin "protocols">
+  Value "Icmp:InDestUnreachs"
+  Value "Tcp:CurrEstab"
+  Value "Tcp:OutSegs"
+  Value "Tcp:RetransSegs"
+  Value "TcpExt:DelayedACKs"
+  Value "TcpExt:DelayedACKs"
+
+  Value "/Tcp:.*Opens/"
+  Value "/^TcpExt:.*Octets/"
+  IgnoreSelected false
+</Plugin>
+
+LoadPlugin vmem
+<Plugin vmem>
+  Verbose false
+</Plugin>
+
+LoadPlugin uptime
+
+# Note: You will get warnings on startup if you have no *.conf files.
+#       This is ok: CollectD will still start.
+Include "/etc/collectd.d/managed_config/*.conf"
+
+Include "/etc/collectd.d/filtering_config/*.conf"
+

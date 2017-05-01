@@ -1,0 +1,53 @@
+---
+# tasks file for signalfx
+#
+- name: Get instance facts from ec2
+  action: ec2_facts
+  register: ec2_facts
+
+- name: install needed packages
+  yum: name={{ item }} state=present
+  with_items:
+    - curl
+    - tar
+
+- name: Install rpms from signalFX
+  yum:
+    name:  {{ signalfx_download_url }}/{{ signalfx_rpms_version }}/{{ item }}
+    state: present
+  with_items:
+    - signalfx_aws_rpms
+  when: ansible_distribution == "Amazon"
+
+- name: Install collectd and base plugins
+  yum: name={{ item }} state=present
+  with_items:
+    - collectd
+    - collectd-disk
+    - collectd-write_http
+    - signalfx-collectd-plugin
+
+- name: create needed dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - /etc/collectd.d
+    - /etc/collectd.d/filtering_config
+    - /etc/collectd.d/managed_config
+
+- name: config files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: collectd.conf.j2, dest: /etc/collectd.conf }
+    - { src: 10-aggregation-cpu.conf.j2, dest: /etc/collectd.d/managed_config/10-aggregation-cpu.conf }
+    - { src: 10-signalfx.conf.j2, dest: /etc/collectd.d/managed_config/10-signalfx.conf }
+    - { src: 10-write-http-plugin.conf.j2, dest: /etc/collectd.d/managed_config/10-write-http-plugin.conf }
+    - { src: filtering.conf.j2, dest: /etc/collectd.d/filtering_config/filtering.conf }
+  notify: restart-collectd
+
+- name: start collectd
+  service: name=collectd state=started enabled=yes

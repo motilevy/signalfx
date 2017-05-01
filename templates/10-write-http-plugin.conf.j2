@@ -1,0 +1,14 @@
+<LoadPlugin "write_http">
+   FlushInterval 10
+</LoadPlugin>
+<Plugin "write_http">
+  <Node "SignalFx">
+    URL "https://ingest.signalfx.com/v1/collectd?sfxdim_AWSUniqueId={{ ansible_ec2_instance_id }}_{{ unique_id}}"
+    Password "{{ signalfx_api_key }}"
+    User "auth"
+    Format "JSON"
+    Timeout 3000
+    BufferSize 65536
+    LogHttpError true
+  </Node>
+</Plugin>

@@ -1,0 +1,6 @@
+---
+# handlers file for signalfx
+- name: restart-collectd
+  service:
+    name: collectd
+    state: restarted

@@ -1,0 +1,15 @@
+#ansible managed
+LoadPlugin python
+TypesDB "/opt/signalfx-collectd-plugin/types.db.plugin"
+<Plugin python>
+  ModulePath "/opt/signalfx-collectd-plugin"
+  LogTraces true
+  Interactive false
+  Import "signalfx_metadata"
+  <Module signalfx_metadata>
+    URL "https://ingest.signalfx.com/v1/collectd?sfxdim_AWSUniqueId={{ ansible_ec2_instance_id }}_{{ unique_id }}"
+    Token "{{ signalfx_api_key }}"
+    Notifications true
+    NotifyLevel "OKAY"
+  </Module>
+</Plugin>
