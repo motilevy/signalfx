@@ -1,4 +1,8 @@
-Ansible role to install SignalFX collectd agent on Amazon Linux
+Ansible role to install SignalFX collectd agent on ec2
+
+## OS support
+ - Amazon Linux
+ - CentOS
 
 
 ## Instructions
