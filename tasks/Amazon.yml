@@ -1,0 +1,20 @@
+- name: install needed packages
+  yum: name={{ item }} state=present
+  with_items:
+    - curl
+    - tar
+
+- name: Install rpms from signalFX
+  yum:
+    name:  "{{ signalfx_download_url }}/{{ signalfx_rpms_version }}/{{ item }}"
+    state: present
+  with_items:
+    "{{ signalfx_aws_rpms }}"
+
+- name: Install collectd and base plugins
+  yum: name={{ item }} state=present
+  with_items:
+    - collectd
+    - collectd-disk
+    - collectd-write_http
+    - signalfx-collectd-plugin
