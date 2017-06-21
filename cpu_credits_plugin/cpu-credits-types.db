@@ -1,0 +1,2 @@
+cpu_credit_balance         value:GAUGE:0:U
+cpu_credit_usage         value:GAUGE:0:U
